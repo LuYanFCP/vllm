@@ -741,6 +741,8 @@ class DeepseekV4MoE(nn.Module):
         self.routed_scaling_factor = getattr(config, "routed_scaling_factor", 1.0)
         self.hidden_size = config.hidden_size
 
+        self.is_sequence_parallel = vllm_config.parallel_config.use_sequence_parallel_moe
+
         self.n_routed_experts = config.n_routed_experts
         self.n_activated_experts = config.num_experts_per_tok
         self.moe_intermediate_size = config.moe_intermediate_size
@@ -801,6 +803,7 @@ class DeepseekV4MoE(nn.Module):
                 swiglu_limit=self.swiglu_limit,
                 quant_config=quant_config,
                 reduce_results=self.use_mega_moe,
+                is_sequence_parallel=self.is_sequence_parallel,
                 prefix=f"{prefix}.shared_experts",
             )
 
